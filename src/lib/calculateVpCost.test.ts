@@ -35,7 +35,8 @@ describe('calculateTeamCost', () => {
       ability: 500,
       stats: 200,
       item: 0,
-      total: 4700
+      total: 4700,
+      alreadyOwned: false
     });
   });
 

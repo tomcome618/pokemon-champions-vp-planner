@@ -15,6 +15,11 @@ export type PokemonCost = {
   stats: number;
   item: number;
   total: number;
+  alreadyOwned: boolean;
+};
+
+export type CostProgressInput = {
+  ownedPokemonNames?: string[];
 };
 
 export type TeamCostResult = {

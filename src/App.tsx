@@ -4,6 +4,7 @@ import { feedbackLinks, sampleTeams } from './data/sampleTeams';
 import { calculateTeamCost } from './lib/calculateVpCost';
 import { estimateTimeline } from './lib/estimateTimeline';
 import { generateShareReport } from './lib/generateShareReport';
+import { parseOwnedPokemonList } from './lib/ownedPokemon';
 import { parseShowdownPaste } from './lib/parseShowdown';
 import { prioritizeUpgrades } from './lib/prioritizeUpgrades';
 
@@ -12,6 +13,7 @@ const formatVp = (value: number) => `${value.toLocaleString()} VP`;
 export function App() {
   const [selectedSampleId, setSelectedSampleId] = useState(sampleTeams[0].id);
   const [paste, setPaste] = useState(sampleTeams[0].paste);
+  const [ownedInput, setOwnedInput] = useState('');
   const [currentVp, setCurrentVp] = useState(12000);
   const [rankedBattlesPerDay, setRankedBattlesPerDay] = useState(10);
   const [winRate, setWinRate] = useState(50);
@@ -20,7 +22,15 @@ export function App() {
   const [copied, setCopied] = useState(false);
 
   const team = useMemo(() => parseShowdownPaste(paste), [paste]);
-  const cost = useMemo(() => calculateTeamCost(team, currentVp), [team, currentVp]);
+  const ownedPokemonNames = useMemo(() => parseOwnedPokemonList(ownedInput), [ownedInput]);
+  const cost = useMemo(
+    () => calculateTeamCost(team, currentVp, { ownedPokemonNames }),
+    [currentVp, ownedPokemonNames, team]
+  );
+  const ownedTargetCount = useMemo(
+    () => cost.pokemonCosts.filter((pokemon) => pokemon.alreadyOwned).length,
+    [cost.pokemonCosts]
+  );
   const priorities = useMemo(() => prioritizeUpgrades(cost.pokemonCosts, currentVp), [cost.pokemonCosts, currentVp]);
   const timeline = useMemo(
     () => estimateTimeline({
@@ -95,6 +105,19 @@ export function App() {
             setPaste(event.target.value);
             setSelectedSampleId('custom');
           }} spellCheck={false} />
+          <div className="owned-box">
+            <label>
+              Already owned Pokémon
+              <textarea
+                className="owned-textarea"
+                placeholder="Example: Sneasler, Incineroar\nOr paste headers like Pelipper @ Focus Sash"
+                value={ownedInput}
+                onChange={(event) => setOwnedInput(event.target.value)}
+                spellCheck={false}
+              />
+            </label>
+            <small>{ownedTargetCount} target Pokémon marked owned. Recruit cost is removed, but moves/nature/ability/stat tuning still count.</small>
+          </div>
           <div className="controls">
             <label>
               Current VP
@@ -122,6 +145,7 @@ export function App() {
           <div className="pill-row">
             <span className={cost.canAffordFullTeam ? 'pill good' : 'pill warn'}>{cost.canAffordFullTeam ? 'Ready to build' : `${formatVp(cost.missingVp)} missing`}</span>
             <span className="pill">{team.length} Pokémon parsed</span>
+            <span className="pill">{ownedTargetCount} owned in this team</span>
           </div>
           <div className="timeline">
             <Clock size={18} /> {timeline.explanation}
@@ -136,13 +160,14 @@ export function App() {
           <table>
             <thead>
               <tr>
-                <th>Pokémon</th><th>Recruit</th><th>Moves</th><th>Nature</th><th>Ability</th><th>Stats</th><th>Total</th>
+                <th>Pokémon</th><th>Owned?</th><th>Recruit</th><th>Moves</th><th>Nature</th><th>Ability</th><th>Stats</th><th>Total</th>
               </tr>
             </thead>
             <tbody>
               {cost.pokemonCosts.map((pokemon) => (
                 <tr key={pokemon.name}>
                   <td>{pokemon.name}</td>
+                  <td>{pokemon.alreadyOwned ? <span className="owned-badge">Owned</span> : 'Need'}</td>
                   <td>{formatVp(pokemon.recruit)}</td>
                   <td>{formatVp(pokemon.moves)}</td>
                   <td>{formatVp(pokemon.nature)}</td>

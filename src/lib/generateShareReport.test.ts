@@ -8,7 +8,7 @@ const cost: TeamCostResult = {
   missingVp: 3400,
   canAffordFullTeam: false,
   pokemonCosts: [
-    { name: 'Sneasler', recruit: 2500, moves: 1000, nature: 500, ability: 500, stats: 200, item: 0, total: 4700 }
+    { name: 'Sneasler', recruit: 0, moves: 1000, nature: 500, ability: 500, stats: 200, item: 0, total: 2200, alreadyOwned: true }
   ]
 };
 
@@ -29,7 +29,7 @@ describe('generateShareReport', () => {
     expect(report).toContain('Pokemon Champions Team VP Plan');
     expect(report).toContain('Total cost: 9,400 VP');
     expect(report).toContain('Missing VP: 3,400 VP');
-    expect(report).toContain('1. Sneasler — 4,700 VP');
+    expect(report).toContain('Sneasler: 2,200 VP (already owned');
     expect(report).toContain('2 days');
   });
 });

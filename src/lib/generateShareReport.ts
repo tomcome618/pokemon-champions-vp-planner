@@ -8,7 +8,10 @@ export function generateShareReport(
   timeline: TimelineEstimate
 ): string {
   const costRows = cost.pokemonCosts
-    .map((pokemon) => `- ${pokemon.name}: ${formatVp(pokemon.total)} (recruit ${formatVp(pokemon.recruit)}, moves ${formatVp(pokemon.moves)}, nature ${formatVp(pokemon.nature)}, ability ${formatVp(pokemon.ability)}, stats ${formatVp(pokemon.stats)})`)
+    .map((pokemon) => {
+      const ownedLabel = pokemon.alreadyOwned ? 'already owned, ' : '';
+      return `- ${pokemon.name}: ${formatVp(pokemon.total)} (${ownedLabel}recruit ${formatVp(pokemon.recruit)}, moves ${formatVp(pokemon.moves)}, nature ${formatVp(pokemon.nature)}, ability ${formatVp(pokemon.ability)}, stats ${formatVp(pokemon.stats)})`;
+    })
     .join('\n');
 
   const priorityRows = priorities

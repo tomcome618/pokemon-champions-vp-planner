@@ -3,9 +3,9 @@ import { prioritizeUpgrades } from './prioritizeUpgrades';
 import type { PokemonCost } from './types';
 
 const costs: PokemonCost[] = [
-  { name: 'Garchomp', recruit: 2500, moves: 1000, nature: 500, ability: 500, stats: 200, item: 0, total: 4700 },
-  { name: 'Sneasler', recruit: 2500, moves: 1000, nature: 500, ability: 500, stats: 200, item: 0, total: 4700 },
-  { name: 'Pelipper', recruit: 2500, moves: 1000, nature: 500, ability: 500, stats: 200, item: 0, total: 4700 }
+  { name: 'Garchomp', recruit: 2500, moves: 1000, nature: 500, ability: 500, stats: 200, item: 0, total: 4700, alreadyOwned: false },
+  { name: 'Sneasler', recruit: 2500, moves: 1000, nature: 500, ability: 500, stats: 200, item: 0, total: 4700, alreadyOwned: false },
+  { name: 'Pelipper', recruit: 2500, moves: 1000, nature: 500, ability: 500, stats: 200, item: 0, total: 4700, alreadyOwned: false }
 ];
 
 describe('prioritizeUpgrades', () => {

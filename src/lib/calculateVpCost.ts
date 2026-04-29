@@ -1,4 +1,5 @@
-import type { ParsedPokemon, PokemonCost, TeamCostResult } from './types';
+import type { CostProgressInput, ParsedPokemon, PokemonCost, TeamCostResult } from './types';
+import { isPokemonOwned } from './ownedPokemon';
 
 const COSTS = {
   recruit: 2500,
@@ -9,8 +10,8 @@ const COSTS = {
   knownFreeItems: new Set(['White Herb', 'Sitrus Berry', 'Focus Sash', 'Mental Herb', 'Leftovers'])
 };
 
-export function calculateTeamCost(team: ParsedPokemon[], currentVp: number): TeamCostResult {
-  const pokemonCosts = team.map(calculatePokemonCost);
+export function calculateTeamCost(team: ParsedPokemon[], currentVp: number, progress: CostProgressInput = {}): TeamCostResult {
+  const pokemonCosts = team.map((pokemon) => calculatePokemonCost(pokemon, progress));
   const totalCost = pokemonCosts.reduce((sum, cost) => sum + cost.total, 0);
   const missingVp = Math.max(0, totalCost - currentVp);
 
@@ -23,8 +24,9 @@ export function calculateTeamCost(team: ParsedPokemon[], currentVp: number): Tea
   };
 }
 
-function calculatePokemonCost(pokemon: ParsedPokemon): PokemonCost {
-  const recruit = COSTS.recruit;
+function calculatePokemonCost(pokemon: ParsedPokemon, progress: CostProgressInput): PokemonCost {
+  const alreadyOwned = isPokemonOwned(pokemon.name, progress.ownedPokemonNames);
+  const recruit = alreadyOwned ? 0 : COSTS.recruit;
   const moves = pokemon.moves.length * COSTS.moveChange;
   const nature = pokemon.nature ? COSTS.nature : 0;
   const ability = pokemon.ability ? COSTS.ability : 0;
@@ -40,6 +42,7 @@ function calculatePokemonCost(pokemon: ParsedPokemon): PokemonCost {
     ability,
     stats,
     item,
-    total
+    total,
+    alreadyOwned
   };
 }
