@@ -1,16 +1,17 @@
-import { Calculator, Clipboard, Clock, Coins, Sparkles } from 'lucide-react';
+import { Calculator, Clipboard, Clock, Coins, MessageSquare, Sparkles } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { feedbackLinks, sampleTeams } from './data/sampleTeams';
 import { calculateTeamCost } from './lib/calculateVpCost';
 import { estimateTimeline } from './lib/estimateTimeline';
 import { generateShareReport } from './lib/generateShareReport';
 import { parseShowdownPaste } from './lib/parseShowdown';
 import { prioritizeUpgrades } from './lib/prioritizeUpgrades';
-import { samplePaste } from './sampleTeam';
 
 const formatVp = (value: number) => `${value.toLocaleString()} VP`;
 
 export function App() {
-  const [paste, setPaste] = useState(samplePaste);
+  const [selectedSampleId, setSelectedSampleId] = useState(sampleTeams[0].id);
+  const [paste, setPaste] = useState(sampleTeams[0].paste);
   const [currentVp, setCurrentVp] = useState(12000);
   const [rankedBattlesPerDay, setRankedBattlesPerDay] = useState(10);
   const [winRate, setWinRate] = useState(50);
@@ -32,6 +33,17 @@ export function App() {
     [cost.missingVp, daily, rankedBattlesPerDay, weekly, winRate]
   );
   const report = useMemo(() => generateShareReport(cost, priorities, timeline), [cost, priorities, timeline]);
+  const selectedSample = useMemo(
+    () => sampleTeams.find((team) => team.id === selectedSampleId),
+    [selectedSampleId]
+  );
+
+  function chooseSampleTeam(teamId: string) {
+    const sample = sampleTeams.find((team) => team.id === teamId);
+    if (!sample) return;
+    setSelectedSampleId(sample.id);
+    setPaste(sample.paste);
+  }
 
   async function copyReport() {
     await navigator.clipboard.writeText(report);
@@ -52,7 +64,37 @@ export function App() {
       <section className="grid">
         <div className="card input-card">
           <div className="card-title"><Clipboard size={20} /> Team paste</div>
-          <textarea value={paste} onChange={(event) => setPaste(event.target.value)} spellCheck={false} />
+          <div className="sample-picker" aria-label="Sample team picker">
+            {sampleTeams.map((sample) => (
+              <button
+                className={sample.id === selectedSampleId ? 'sample-chip active' : 'sample-chip'}
+                key={sample.id}
+                onClick={() => chooseSampleTeam(sample.id)}
+                type="button"
+              >
+                {sample.archetype}
+              </button>
+            ))}
+          </div>
+          <div className="sample-detail">
+            {selectedSample ? (
+              <>
+                <strong>{selectedSample.title}</strong>
+                <span>{selectedSample.difficulty} · {selectedSample.bestFor}</span>
+                <small>{selectedSample.notes}</small>
+              </>
+            ) : (
+              <>
+                <strong>Custom team</strong>
+                <span>Paste or edit any Showdown-style team.</span>
+                <small>The planner will recalculate VP cost and priority as you type.</small>
+              </>
+            )}
+          </div>
+          <textarea value={paste} onChange={(event) => {
+            setPaste(event.target.value);
+            setSelectedSampleId('custom');
+          }} spellCheck={false} />
           <div className="controls">
             <label>
               Current VP
@@ -127,6 +169,15 @@ export function App() {
               </div>
             </article>
           ))}
+        </div>
+      </section>
+
+      <section className="card feedback-card">
+        <div className="card-title"><MessageSquare size={20} /> Help validate the VP data</div>
+        <p>{feedbackLinks.redditPrompt}</p>
+        <div className="feedback-actions">
+          <a href={feedbackLinks.githubIssues} target="_blank" rel="noreferrer">Report wrong VP cost</a>
+          <button onClick={copyReport} type="button">Copy plan for Reddit/Discord</button>
         </div>
       </section>
 

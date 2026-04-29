@@ -34,6 +34,13 @@ input[type="number"] { width: 100%; border: 1px solid #334865; border-radius: 12
 .timeline { margin-top: auto; display: flex; gap: 8px; align-items: flex-start; color: #cbd5e1; background: #081322; border-radius: 16px; padding: 14px; line-height: 1.45; }
 button { margin-top: 16px; width: 100%; border: 0; border-radius: 14px; padding: 14px 16px; background: linear-gradient(135deg, #2563eb, #7c3aed); color: white; font-weight: 900; cursor: pointer; }
 button:hover { filter: brightness(1.1); }
+.sample-picker { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.sample-chip { width: auto; margin: 0; border: 1px solid #334865; background: #0b1728; color: #c7d2fe; padding: 9px 11px; border-radius: 999px; font-size: 13px; }
+.sample-chip.active { border-color: #60a5fa; background: #1d4ed8; color: white; }
+.sample-detail { display: grid; gap: 5px; margin-bottom: 12px; padding: 13px 14px; border: 1px solid #263855; border-radius: 16px; background: #081322; }
+.sample-detail strong { color: #eff6ff; }
+.sample-detail span { color: #bfdbfe; font-size: 13px; line-height: 1.45; }
+.sample-detail small { color: #93a4bc; line-height: 1.45; }
 
 .table-wrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; min-width: 760px; }
@@ -49,9 +56,12 @@ td { color: #d5e2f3; }
 .priority p { margin: 0 0 8px; color: #cbd5e1; line-height: 1.5; }
 .priority small { color: #93c5fd; line-height: 1.45; }
 .notes h2 { margin-top: 0; }
-.notes p { color: #b6c4db; line-height: 1.6; }
+.notes p, .feedback-card p { color: #b6c4db; line-height: 1.6; }
+.feedback-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; align-items: stretch; }
+.feedback-actions a, .feedback-actions button { display: grid; place-items: center; min-height: 48px; margin: 0; border-radius: 14px; text-decoration: none; font-weight: 900; }
+.feedback-actions a { border: 1px solid #60a5fa; color: #dbeafe; background: #0b1d33; }
 
 @media (max-width: 900px) {
-  .grid, .controls { grid-template-columns: 1fr; }
+  .grid, .controls, .feedback-actions { grid-template-columns: 1fr; }
   textarea { height: 360px; }
 }
