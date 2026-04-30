@@ -215,6 +215,11 @@ export function App() {
                 <h3>{row.archetype}</h3>
                 <p>{row.title}</p>
                 <small>{row.difficulty} · {row.pokemonCount} Pokémon · {row.bestFor}</small>
+                <div className="comparison-insight">
+                  <span>{row.ownedCount}/{row.pokemonCount} owned</span>
+                  <span>{formatVp(row.recruitVpSaved)} saved</span>
+                </div>
+                <small className="comparison-reason">{row.recommendationReason}</small>
               </div>
               <div className="comparison-metrics">
                 <strong>{formatVp(row.totalCost)}</strong>

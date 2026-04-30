@@ -74,6 +74,9 @@ td { color: #d5e2f3; }
 .comparison-row p { margin: 0 0 6px; color: #cbd5e1; }
 .comparison-row small { color: #93a4bc; line-height: 1.45; }
 .comparison-metrics { display: grid; gap: 4px; }
+.comparison-insight { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 6px; }
+.comparison-insight span { display: inline-flex; border: 1px solid #3b4f6d; border-radius: 999px; padding: 5px 8px; background: #0b1728; color: #bfdbfe; font-size: 12px; font-weight: 900; }
+.comparison-reason { display: block; color: #93c5fd !important; }
 .comparison-metrics strong { color: #fbbf24; font-size: 20px; }
 .comparison-metrics span { color: #bfdbfe; font-weight: 900; font-size: 13px; }
 .feedback-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; align-items: stretch; }

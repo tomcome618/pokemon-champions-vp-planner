@@ -20,6 +20,9 @@ export type SampleTeamComparisonRow = {
   difficulty: SampleTeam['difficulty'];
   bestFor: string;
   pokemonCount: number;
+  ownedCount: number;
+  recruitVpSaved: number;
+  recommendationReason: string;
   totalCost: number;
   missingVp: number;
   canAfford: boolean;
@@ -47,6 +50,11 @@ export function compareSampleTeams(
         completesDailyMission: options.completesDailyMission ?? true,
         completesWeeklyMission: options.completesWeeklyMission ?? false
       });
+      const ownedCount = cost.pokemonCosts.filter((pokemon) => pokemon.alreadyOwned).length;
+      const recruitVpSaved = ownedCount * options.costAssumptions.recruit;
+      const recommendationReason = ownedCount > 0
+        ? `Cheapest sample for your current box: ${ownedCount}/${parsedTeam.length} owned and ${recruitVpSaved.toLocaleString()} VP recruit cost saved.`
+        : 'No owned Pokémon discount yet; compare total VP, difficulty, and fit before committing.';
 
       return {
         id: sample.id,
@@ -55,6 +63,9 @@ export function compareSampleTeams(
         difficulty: sample.difficulty,
         bestFor: sample.bestFor,
         pokemonCount: parsedTeam.length,
+        ownedCount,
+        recruitVpSaved,
+        recommendationReason,
         totalCost: cost.totalCost,
         missingVp: cost.missingVp,
         canAfford: cost.canAffordFullTeam,
