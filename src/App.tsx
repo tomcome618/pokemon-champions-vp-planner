@@ -2,6 +2,7 @@ import { Calculator, Clipboard, Clock, Coins, MessageSquare, Sparkles } from 'lu
 import { useMemo, useState } from 'react';
 import { feedbackLinks, sampleTeams } from './data/sampleTeams';
 import { DEFAULT_COST_ASSUMPTIONS, calculateTeamCost } from './lib/calculateVpCost';
+import { compareSampleTeams } from './lib/compareSampleTeams';
 import { estimateTimeline } from './lib/estimateTimeline';
 import { generateShareReport } from './lib/generateShareReport';
 import { parseOwnedPokemonList } from './lib/ownedPokemon';
@@ -47,6 +48,17 @@ export function App() {
   const selectedSample = useMemo(
     () => sampleTeams.find((team) => team.id === selectedSampleId),
     [selectedSampleId]
+  );
+  const comparisonRows = useMemo(
+    () => compareSampleTeams(sampleTeams, currentVp, {
+      costAssumptions,
+      ownedPokemonNames,
+      rankedBattlesPerDay,
+      winRate: winRate / 100,
+      completesDailyMission: daily,
+      completesWeeklyMission: weekly
+    }),
+    [costAssumptions, currentVp, daily, ownedPokemonNames, rankedBattlesPerDay, weekly, winRate]
   );
 
   function chooseSampleTeam(teamId: string) {
@@ -190,6 +202,28 @@ export function App() {
             <Clock size={18} /> {timeline.explanation}
           </div>
           <button onClick={copyReport}>{copied ? 'Copied report' : 'Copy share report'}</button>
+        </div>
+      </section>
+
+      <section className="card comparison-card">
+        <div className="card-title"><Coins size={20} /> Compare sample teams by VP cost</div>
+        <p className="section-copy">Sorted by estimated total cost using your current VP, owned Pokémon, and advanced cost assumptions. Use this when a player asks: “Which team can I afford first?”</p>
+        <div className="comparison-grid">
+          {comparisonRows.map((row) => (
+            <article className={row.canAfford ? 'comparison-row affordable' : 'comparison-row'} key={row.id}>
+              <div>
+                <h3>{row.archetype}</h3>
+                <p>{row.title}</p>
+                <small>{row.difficulty} · {row.pokemonCount} Pokémon · {row.bestFor}</small>
+              </div>
+              <div className="comparison-metrics">
+                <strong>{formatVp(row.totalCost)}</strong>
+                <span>{row.canAfford ? 'Affordable now' : `${formatVp(row.missingVp)} missing`}</span>
+                <small>{row.daysNeeded === 0 ? 'Ready today' : `${row.daysNeeded} day${row.daysNeeded === 1 ? '' : 's'} at this pace`}</small>
+              </div>
+              <button className="secondary-button" onClick={() => chooseSampleTeam(row.id)} type="button">Load team</button>
+            </article>
+          ))}
         </div>
       </section>
 
