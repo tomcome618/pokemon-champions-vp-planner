@@ -1,4 +1,4 @@
-import { Calculator, Clipboard, Clock, Coins, MessageSquare, Sparkles } from 'lucide-react';
+import { Calculator, Clipboard, Clock, Coins, Link, MessageSquare, Sparkles } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { feedbackLinks, sampleTeams } from './data/sampleTeams';
 import { DEFAULT_COST_ASSUMPTIONS, calculateTeamCost } from './lib/calculateVpCost';
@@ -6,22 +6,45 @@ import { compareSampleTeams } from './lib/compareSampleTeams';
 import { estimateTimeline } from './lib/estimateTimeline';
 import { generateShareReport } from './lib/generateShareReport';
 import { parseOwnedPokemonList } from './lib/ownedPokemon';
+import { decodePlannerStateFromQuery, encodePlannerStateToQuery, type PlannerUrlState } from './lib/plannerUrlState';
 import { parseShowdownPaste } from './lib/parseShowdown';
 import { prioritizeUpgrades } from './lib/prioritizeUpgrades';
 
 const formatVp = (value: number) => `${value.toLocaleString()} VP`;
 
+function getInitialPlannerState(): PlannerUrlState {
+  if (typeof window !== 'undefined') {
+    const sharedState = decodePlannerStateFromQuery(window.location.search);
+    if (sharedState) return sharedState;
+  }
+
+  return {
+    paste: sampleTeams[0].paste,
+    ownedInput: '',
+    currentVp: 12000,
+    rankedBattlesPerDay: 10,
+    winRate: 50,
+    completesDailyMission: true,
+    completesWeeklyMission: false,
+    costAssumptions: DEFAULT_COST_ASSUMPTIONS
+  };
+}
+
 export function App() {
-  const [selectedSampleId, setSelectedSampleId] = useState(sampleTeams[0].id);
-  const [paste, setPaste] = useState(sampleTeams[0].paste);
-  const [ownedInput, setOwnedInput] = useState('');
-  const [currentVp, setCurrentVp] = useState(12000);
-  const [rankedBattlesPerDay, setRankedBattlesPerDay] = useState(10);
-  const [winRate, setWinRate] = useState(50);
-  const [daily, setDaily] = useState(true);
-  const [weekly, setWeekly] = useState(false);
+  const initialPlannerState = useMemo(() => getInitialPlannerState(), []);
+  const [selectedSampleId, setSelectedSampleId] = useState(
+    initialPlannerState.paste === sampleTeams[0].paste ? sampleTeams[0].id : 'custom'
+  );
+  const [paste, setPaste] = useState(initialPlannerState.paste);
+  const [ownedInput, setOwnedInput] = useState(initialPlannerState.ownedInput);
+  const [currentVp, setCurrentVp] = useState(initialPlannerState.currentVp);
+  const [rankedBattlesPerDay, setRankedBattlesPerDay] = useState(initialPlannerState.rankedBattlesPerDay);
+  const [winRate, setWinRate] = useState(initialPlannerState.winRate);
+  const [daily, setDaily] = useState(initialPlannerState.completesDailyMission);
+  const [weekly, setWeekly] = useState(initialPlannerState.completesWeeklyMission);
   const [copied, setCopied] = useState(false);
-  const [costAssumptions, setCostAssumptions] = useState(DEFAULT_COST_ASSUMPTIONS);
+  const [copiedLink, setCopiedLink] = useState(false);
+  const [costAssumptions, setCostAssumptions] = useState(initialPlannerState.costAssumptions);
 
   const team = useMemo(() => parseShowdownPaste(paste), [paste]);
   const ownedPokemonNames = useMemo(() => parseOwnedPokemonList(ownedInput), [ownedInput]);
@@ -45,6 +68,20 @@ export function App() {
     [cost.missingVp, daily, rankedBattlesPerDay, weekly, winRate]
   );
   const report = useMemo(() => generateShareReport(cost, priorities, timeline), [cost, priorities, timeline]);
+  const shareLink = useMemo(() => {
+    const query = encodePlannerStateToQuery({
+      paste,
+      ownedInput,
+      currentVp,
+      rankedBattlesPerDay,
+      winRate,
+      completesDailyMission: daily,
+      completesWeeklyMission: weekly,
+      costAssumptions
+    });
+    const origin = typeof window === 'undefined' ? '' : `${window.location.origin}${window.location.pathname}`;
+    return `${origin}${query}`;
+  }, [costAssumptions, currentVp, daily, ownedInput, paste, rankedBattlesPerDay, weekly, winRate]);
   const selectedSample = useMemo(
     () => sampleTeams.find((team) => team.id === selectedSampleId),
     [selectedSampleId]
@@ -72,6 +109,13 @@ export function App() {
     await navigator.clipboard.writeText(report);
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1800);
+  }
+
+  async function copyShareLink() {
+    await navigator.clipboard.writeText(shareLink);
+    window.history.replaceState(null, '', shareLink);
+    setCopiedLink(true);
+    window.setTimeout(() => setCopiedLink(false), 1800);
   }
 
   function updateCostAssumption(key: keyof typeof costAssumptions, value: number) {
@@ -201,7 +245,12 @@ export function App() {
           <div className="timeline">
             <Clock size={18} /> {timeline.explanation}
           </div>
-          <button onClick={copyReport}>{copied ? 'Copied report' : 'Copy share report'}</button>
+          <div className="share-actions">
+            <button onClick={copyReport}>{copied ? 'Copied report' : 'Copy share report'}</button>
+            <button className="secondary-button share-link-button" onClick={copyShareLink} type="button">
+              <Link size={16} /> {copiedLink ? 'Copied share link' : 'Copy shareable link'}
+            </button>
+          </div>
         </div>
       </section>
 

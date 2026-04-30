@@ -34,6 +34,9 @@ input[type="number"] { width: 100%; border: 1px solid #334865; border-radius: 12
 .timeline { margin-top: auto; display: flex; gap: 8px; align-items: flex-start; color: #cbd5e1; background: #081322; border-radius: 16px; padding: 14px; line-height: 1.45; }
 button { margin-top: 16px; width: 100%; border: 0; border-radius: 14px; padding: 14px 16px; background: linear-gradient(135deg, #2563eb, #7c3aed); color: white; font-weight: 900; cursor: pointer; }
 button:hover { filter: brightness(1.1); }
+.share-actions { display: grid; gap: 10px; margin-top: 16px; }
+.share-actions button { margin-top: 0; }
+.share-link-button { display: inline-flex; justify-content: center; align-items: center; gap: 8px; width: 100%; }
 .owned-box { margin-top: 12px; padding: 13px 14px; border: 1px solid #263855; border-radius: 16px; background: #081322; }
 .owned-box label { font-size: 13px; }
 .owned-box small { display: block; margin-top: 8px; color: #93c5fd; line-height: 1.45; }
