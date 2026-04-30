@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import { feedbackLinks, sampleTeams } from './data/sampleTeams';
 import { DEFAULT_COST_ASSUMPTIONS, calculateTeamCost } from './lib/calculateVpCost';
 import { compareSampleTeams } from './lib/compareSampleTeams';
+import { getCostDataQualityRows, summarizeCostDataQuality } from './lib/costDataQuality';
 import { createFeedbackIssueUrl } from './lib/createFeedbackIssueUrl';
 import { estimateTimeline } from './lib/estimateTimeline';
 import { generateShareReport } from './lib/generateShareReport';
@@ -108,6 +109,8 @@ export function App() {
     }),
     [costAssumptions, currentVp, daily, ownedPokemonNames, rankedBattlesPerDay, weekly, winRate]
   );
+  const costDataRows = useMemo(() => getCostDataQualityRows(), []);
+  const costDataSummary = useMemo(() => summarizeCostDataQuality(costDataRows), [costDataRows]);
 
   function chooseSampleTeam(teamId: string) {
     const sample = sampleTeams.find((team) => team.id === teamId);
@@ -262,6 +265,27 @@ export function App() {
               <Link size={16} /> {copiedLink ? 'Copied share link' : 'Copy shareable link'}
             </button>
           </div>
+        </div>
+      </section>
+
+      <section className="card data-quality-card">
+        <div className="card-title"><MessageSquare size={20} /> Cost data transparency</div>
+        <p className="section-copy">
+          {costDataSummary.warning} Current status: {costDataSummary.confirmed} confirmed, {costDataSummary.estimated} estimated, {costDataSummary.unknown} unknown.
+        </p>
+        <div className="quality-grid">
+          {costDataRows.map((row) => (
+            <article className="quality-row" key={row.category}>
+              <div className="quality-heading">
+                <h3>{row.category}</h3>
+                <span className={`quality-badge ${row.status}`}>{row.status}</span>
+              </div>
+              <p>{row.sourceNote}</p>
+              <small>
+                Default: {row.defaultVp === null ? 'not priced yet' : formatVp(row.defaultVp)} · {row.feedbackPrompt}
+              </small>
+            </article>
+          ))}
         </div>
       </section>
 
