@@ -46,4 +46,24 @@ describe('calculateTeamCost', () => {
     expect(result.canAffordFullTeam).toBe(true);
     expect(result.missingVp).toBe(0);
   });
+
+  it('uses custom VP assumptions when players override uncertain costs', () => {
+    const result = calculateTeamCost(team.slice(0, 1), 0, {}, {
+      recruit: 3000,
+      moveChange: 100,
+      nature: 700,
+      ability: 800,
+      statsEstimate: 50
+    });
+
+    expect(result.totalCost).toBe(4950);
+    expect(result.pokemonCosts[0]).toMatchObject({
+      recruit: 3000,
+      moves: 400,
+      nature: 700,
+      ability: 800,
+      stats: 50,
+      total: 4950
+    });
+  });
 });

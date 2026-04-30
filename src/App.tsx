@@ -1,7 +1,7 @@
 import { Calculator, Clipboard, Clock, Coins, MessageSquare, Sparkles } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { feedbackLinks, sampleTeams } from './data/sampleTeams';
-import { calculateTeamCost } from './lib/calculateVpCost';
+import { DEFAULT_COST_ASSUMPTIONS, calculateTeamCost } from './lib/calculateVpCost';
 import { estimateTimeline } from './lib/estimateTimeline';
 import { generateShareReport } from './lib/generateShareReport';
 import { parseOwnedPokemonList } from './lib/ownedPokemon';
@@ -20,12 +20,13 @@ export function App() {
   const [daily, setDaily] = useState(true);
   const [weekly, setWeekly] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [costAssumptions, setCostAssumptions] = useState(DEFAULT_COST_ASSUMPTIONS);
 
   const team = useMemo(() => parseShowdownPaste(paste), [paste]);
   const ownedPokemonNames = useMemo(() => parseOwnedPokemonList(ownedInput), [ownedInput]);
   const cost = useMemo(
-    () => calculateTeamCost(team, currentVp, { ownedPokemonNames }),
-    [currentVp, ownedPokemonNames, team]
+    () => calculateTeamCost(team, currentVp, { ownedPokemonNames }, costAssumptions),
+    [costAssumptions, currentVp, ownedPokemonNames, team]
   );
   const ownedTargetCount = useMemo(
     () => cost.pokemonCosts.filter((pokemon) => pokemon.alreadyOwned).length,
@@ -59,6 +60,17 @@ export function App() {
     await navigator.clipboard.writeText(report);
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1800);
+  }
+
+  function updateCostAssumption(key: keyof typeof costAssumptions, value: number) {
+    setCostAssumptions((current) => ({
+      ...current,
+      [key]: Number.isFinite(value) ? Math.max(0, value) : 0
+    }));
+  }
+
+  function resetCostAssumptions() {
+    setCostAssumptions(DEFAULT_COST_ASSUMPTIONS);
   }
 
   return (
@@ -136,6 +148,33 @@ export function App() {
             <label><input type="checkbox" checked={daily} onChange={(event) => setDaily(event.target.checked)} /> Daily mission (+500 VP/day)</label>
             <label><input type="checkbox" checked={weekly} onChange={(event) => setWeekly(event.target.checked)} /> Weekly missions (+9,000 VP/week)</label>
           </div>
+          <details className="assumptions-box">
+            <summary>Advanced: edit VP cost assumptions</summary>
+            <p>These are estimates while official and community data changes. Adjust them before sharing a plan if players report different values.</p>
+            <div className="assumption-grid">
+              <label>
+                Recruit cost
+                <input type="number" min={0} value={costAssumptions.recruit} onChange={(event) => updateCostAssumption('recruit', Number(event.target.value))} />
+              </label>
+              <label>
+                Move change
+                <input type="number" min={0} value={costAssumptions.moveChange} onChange={(event) => updateCostAssumption('moveChange', Number(event.target.value))} />
+              </label>
+              <label>
+                Nature change
+                <input type="number" min={0} value={costAssumptions.nature} onChange={(event) => updateCostAssumption('nature', Number(event.target.value))} />
+              </label>
+              <label>
+                Ability change
+                <input type="number" min={0} value={costAssumptions.ability} onChange={(event) => updateCostAssumption('ability', Number(event.target.value))} />
+              </label>
+              <label>
+                Stat tuning estimate
+                <input type="number" min={0} value={costAssumptions.statsEstimate} onChange={(event) => updateCostAssumption('statsEstimate', Number(event.target.value))} />
+              </label>
+            </div>
+            <button className="secondary-button" onClick={resetCostAssumptions} type="button">Reset default assumptions</button>
+          </details>
         </div>
 
         <div className="card summary-card">

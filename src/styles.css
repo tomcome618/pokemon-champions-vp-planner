@@ -39,6 +39,11 @@ button:hover { filter: brightness(1.1); }
 .owned-box small { display: block; margin-top: 8px; color: #93c5fd; line-height: 1.45; }
 .owned-textarea { height: 86px; min-height: 86px; margin-top: 6px; border-radius: 12px; }
 .owned-badge { display: inline-flex; border-radius: 999px; padding: 5px 8px; color: #d1fae5; background: #065f46; font-size: 12px; font-weight: 900; }
+.assumptions-box { margin-top: 14px; padding: 14px; border: 1px solid #334865; border-radius: 16px; background: #081322; }
+.assumptions-box summary { cursor: pointer; color: #bfdbfe; font-weight: 900; }
+.assumptions-box p { margin: 10px 0 12px; color: #93a4bc; line-height: 1.5; font-size: 13px; }
+.assumption-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.secondary-button { width: auto; margin-top: 12px; border: 1px solid #3b4f6d; background: #0b1728; color: #dbeafe; padding: 10px 12px; }
 .sample-picker { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
 .sample-chip { width: auto; margin: 0; border: 1px solid #334865; background: #0b1728; color: #c7d2fe; padding: 9px 11px; border-radius: 999px; font-size: 13px; }
 .sample-chip.active { border-color: #60a5fa; background: #1d4ed8; color: white; }
@@ -67,6 +72,6 @@ td { color: #d5e2f3; }
 .feedback-actions a { border: 1px solid #60a5fa; color: #dbeafe; background: #0b1d33; }
 
 @media (max-width: 900px) {
-  .grid, .controls, .feedback-actions { grid-template-columns: 1fr; }
+  .grid, .controls, .feedback-actions, .assumption-grid { grid-template-columns: 1fr; }
   textarea { height: 360px; }
 }

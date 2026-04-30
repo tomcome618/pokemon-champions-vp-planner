@@ -22,6 +22,14 @@ export type CostProgressInput = {
   ownedPokemonNames?: string[];
 };
 
+export type VpCostAssumptions = {
+  recruit: number;
+  moveChange: number;
+  nature: number;
+  ability: number;
+  statsEstimate: number;
+};
+
 export type TeamCostResult = {
   pokemonCosts: PokemonCost[];
   totalCost: number;
