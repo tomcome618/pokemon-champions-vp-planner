@@ -95,8 +95,12 @@ td { color: #d5e2f3; }
 .feedback-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; align-items: stretch; }
 .feedback-actions a, .feedback-actions button { display: grid; place-items: center; min-height: 48px; margin: 0; border-radius: 14px; text-decoration: none; font-weight: 900; }
 .feedback-actions a { border: 1px solid #60a5fa; color: #dbeafe; background: #0b1d33; }
+.seo-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.seo-section { border: 1px solid #263855; border-radius: 18px; background: #081322; padding: 16px; }
+.seo-section h2 { margin: 0 0 8px; color: #eff6ff; font-size: 18px; }
+.seo-section p { margin: 0; color: #b6c4db; line-height: 1.65; }
 
 @media (max-width: 900px) {
-  .grid, .controls, .feedback-actions, .assumption-grid, .comparison-row, .quality-grid { grid-template-columns: 1fr; }
+  .grid, .controls, .feedback-actions, .assumption-grid, .comparison-row, .quality-grid, .seo-grid { grid-template-columns: 1fr; }
   textarea { height: 360px; }
 }

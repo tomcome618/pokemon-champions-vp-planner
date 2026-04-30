@@ -11,6 +11,7 @@ import { parseOwnedPokemonList } from './lib/ownedPokemon';
 import { decodePlannerStateFromQuery, encodePlannerStateToQuery, type PlannerUrlState } from './lib/plannerUrlState';
 import { parseShowdownPaste } from './lib/parseShowdown';
 import { prioritizeUpgrades } from './lib/prioritizeUpgrades';
+import { getSeoContentSections } from './lib/seoContent';
 
 const formatVp = (value: number) => `${value.toLocaleString()} VP`;
 
@@ -111,6 +112,7 @@ export function App() {
   );
   const costDataRows = useMemo(() => getCostDataQualityRows(), []);
   const costDataSummary = useMemo(() => summarizeCostDataQuality(costDataRows), [costDataRows]);
+  const seoSections = useMemo(() => getSeoContentSections(), []);
 
   function chooseSampleTeam(teamId: string) {
     const sample = sampleTeams.find((team) => team.id === teamId);
@@ -365,6 +367,21 @@ export function App() {
         <div className="feedback-actions">
           <a href={feedbackIssueUrl} target="_blank" rel="noreferrer">Report wrong VP cost</a>
           <button onClick={copyReport} type="button">Copy plan for Reddit/Discord</button>
+        </div>
+      </section>
+
+      <section className="card seo-card">
+        <div className="card-title"><Sparkles size={20} /> Pokémon Champions VP planner guide</div>
+        <p className="section-copy">
+          Use this guide when sharing the calculator with players who have not used a VP budgeting tool before.
+        </p>
+        <div className="seo-grid">
+          {seoSections.map((section) => (
+            <article className="seo-section" key={section.heading}>
+              <h2>{section.heading}</h2>
+              <p>{section.body}</p>
+            </article>
+          ))}
         </div>
       </section>
 
