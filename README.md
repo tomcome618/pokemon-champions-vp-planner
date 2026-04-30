@@ -8,6 +8,8 @@ Paste a Pokemon Champions / Showdown-style team and get a practical VP plan:
 - daily completion estimate
 - upgrade priority order
 - copyable share report
+- URL share links that restore the same team, VP settings, owned Pokemon, and assumptions
+- prefilled GitHub feedback issues for wrong or missing VP data
 
 This MVP intentionally focuses on the Pokemon Champions-specific pain point: "Can I afford this team, and who should I build first?"
 
@@ -49,6 +51,7 @@ Share the app with Pokemon Champions / VGC players and check whether users:
 
 1. paste real teams,
 2. edit current VP,
-3. copy/share the generated report,
-4. ask for owned Pokemon box support,
-5. ask for cheaper alternatives or better cost data.
+3. copy/share the generated report or URL,
+4. report wrong VP data through the prefilled GitHub issue link,
+5. ask for owned Pokemon box support,
+6. ask for cheaper alternatives or better cost data.

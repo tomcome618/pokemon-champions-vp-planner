@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import { feedbackLinks, sampleTeams } from './data/sampleTeams';
 import { DEFAULT_COST_ASSUMPTIONS, calculateTeamCost } from './lib/calculateVpCost';
 import { compareSampleTeams } from './lib/compareSampleTeams';
+import { createFeedbackIssueUrl } from './lib/createFeedbackIssueUrl';
 import { estimateTimeline } from './lib/estimateTimeline';
 import { generateShareReport } from './lib/generateShareReport';
 import { parseOwnedPokemonList } from './lib/ownedPokemon';
@@ -82,6 +83,16 @@ export function App() {
     const origin = typeof window === 'undefined' ? '' : `${window.location.origin}${window.location.pathname}`;
     return `${origin}${query}`;
   }, [costAssumptions, currentVp, daily, ownedInput, paste, rankedBattlesPerDay, weekly, winRate]);
+  const feedbackIssueUrl = useMemo(
+    () => createFeedbackIssueUrl({
+      baseUrl: feedbackLinks.githubIssues,
+      report,
+      shareLink,
+      parsedPokemonCount: team.length,
+      totalCost: cost.totalCost
+    }),
+    [cost.totalCost, report, shareLink, team.length]
+  );
   const selectedSample = useMemo(
     () => sampleTeams.find((team) => team.id === selectedSampleId),
     [selectedSampleId]
@@ -328,7 +339,7 @@ export function App() {
         <div className="card-title"><MessageSquare size={20} /> Help validate the VP data</div>
         <p>{feedbackLinks.redditPrompt}</p>
         <div className="feedback-actions">
-          <a href={feedbackLinks.githubIssues} target="_blank" rel="noreferrer">Report wrong VP cost</a>
+          <a href={feedbackIssueUrl} target="_blank" rel="noreferrer">Report wrong VP cost</a>
           <button onClick={copyReport} type="button">Copy plan for Reddit/Discord</button>
         </div>
       </section>
