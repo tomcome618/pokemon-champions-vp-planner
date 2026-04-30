@@ -7,6 +7,7 @@ Paste a Pokemon Champions / Showdown-style team and get a practical VP plan:
 - missing VP based on current budget
 - daily completion estimate
 - upgrade priority order
+- 8 validation-ready sample teams for different player intents
 - copyable share report
 - URL share links that restore the same team, VP settings, owned Pokemon, and assumptions
 - prefilled GitHub feedback issues for wrong or missing VP data
@@ -49,9 +50,10 @@ npm run build
 
 Share the app with Pokemon Champions / VGC players and check whether users:
 
-1. paste real teams,
-2. edit current VP,
-3. copy/share the generated report or URL,
-4. report wrong VP data through the prefilled GitHub issue link,
-5. ask for owned Pokemon box support,
-6. ask for cheaper alternatives or better cost data.
+1. load a sample team that matches their intent,
+2. paste real teams,
+3. edit current VP,
+4. copy/share the generated report or URL,
+5. report wrong VP data through the prefilled GitHub issue link,
+6. ask for owned Pokemon box support,
+7. ask for cheaper alternatives or better cost data.
