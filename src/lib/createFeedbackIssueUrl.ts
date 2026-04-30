@@ -1,9 +1,12 @@
+import type { CostDataQualityRow } from './costDataQuality';
+
 export type FeedbackIssueUrlInput = {
   baseUrl: string;
   report: string;
   shareLink: string;
   parsedPokemonCount: number;
   totalCost: number;
+  category?: CostDataQualityRow;
 };
 
 export function createFeedbackIssueUrl(input: FeedbackIssueUrlInput): string {
@@ -11,7 +14,9 @@ export function createFeedbackIssueUrl(input: FeedbackIssueUrlInput): string {
   const pokemonLabel = input.parsedPokemonCount === 1 ? 'Pokemon' : 'Pokemon';
   params.set(
     'title',
-    `VP data feedback: ${input.parsedPokemonCount} ${pokemonLabel} / ${input.totalCost.toLocaleString()} VP estimate`
+    input.category
+      ? `VP data feedback: ${input.category.category}`
+      : `VP data feedback: ${input.parsedPokemonCount} ${pokemonLabel} / ${input.totalCost.toLocaleString()} VP estimate`
   );
   params.set('labels', 'vp-data,feedback');
   params.set('body', buildIssueBody(input));
@@ -20,7 +25,21 @@ export function createFeedbackIssueUrl(input: FeedbackIssueUrlInput): string {
 }
 
 function buildIssueBody(input: FeedbackIssueUrlInput): string {
+  const categoryRows = input.category
+    ? [
+        '## Cost category',
+        '',
+        `Category: ${input.category.category}`,
+        `Status: ${input.category.status}`,
+        `Current default VP: ${input.category.defaultVp === null ? 'not priced yet' : input.category.defaultVp.toLocaleString()}`,
+        `Source note: ${input.category.sourceNote}`,
+        `Feedback prompt: ${input.category.feedbackPrompt}`,
+        ''
+      ]
+    : [];
+
   const contextRows = [
+    ...categoryRows,
     '## What looks wrong?',
     '',
     '- [ ] Recruitment cost',

@@ -77,6 +77,8 @@ td { color: #d5e2f3; }
 .quality-heading h3 { margin: 0; color: #eff6ff; font-size: 16px; }
 .quality-row p { margin: 0 0 10px; color: #cbd5e1; line-height: 1.5; }
 .quality-row small { color: #93c5fd; line-height: 1.45; }
+.quality-feedback-link { display: inline-flex; width: fit-content; margin-top: 12px; border: 1px solid #60a5fa; border-radius: 999px; background: #0b1d33; color: #dbeafe; padding: 8px 10px; text-decoration: none; font-size: 12px; font-weight: 900; }
+.quality-feedback-link:hover { filter: brightness(1.12); }
 .quality-badge { border-radius: 999px; padding: 5px 8px; text-transform: uppercase; letter-spacing: .04em; font-size: 11px; font-weight: 900; }
 .quality-badge.confirmed { background: #064e3b; color: #d1fae5; border: 1px solid #10b981; }
 .quality-badge.estimated { background: #451a03; color: #fde68a; border: 1px solid #f59e0b; }

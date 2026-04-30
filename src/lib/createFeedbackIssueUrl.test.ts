@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { getCostDataQualityRows } from './costDataQuality';
 import { createFeedbackIssueUrl } from './createFeedbackIssueUrl';
 
 const baseUrl = 'https://github.com/tomcome618/pokemon-champions-vp-planner/issues/new';
@@ -34,5 +35,28 @@ describe('createFeedbackIssueUrl', () => {
     const parsed = new URL(url);
     expect(parsed.searchParams.get('title')).toBe('VP data feedback: 0 Pokemon / 0 VP estimate');
     expect(parsed.searchParams.get('body')).toContain('Paste any screenshots or corrected VP values here.');
+  });
+
+  it('creates a category-specific issue URL for each cost data quality row', () => {
+    for (const row of getCostDataQualityRows()) {
+      const url = createFeedbackIssueUrl({
+        baseUrl,
+        report: 'Pokemon Champions Team VP Plan\n\nTotal cost: 18,800 VP',
+        shareLink: 'https://tomcome618.github.io/pokemon-champions-vp-planner/?team=abc',
+        parsedPokemonCount: 4,
+        totalCost: 18800,
+        category: row
+      });
+
+      const parsed = new URL(url);
+      expect(parsed.searchParams.get('title')).toBe(`VP data feedback: ${row.category}`);
+      expect(parsed.searchParams.get('labels')).toBe('vp-data,feedback');
+      const body = parsed.searchParams.get('body') ?? '';
+      expect(body).toContain(`Category: ${row.category}`);
+      expect(body).toContain(`Status: ${row.status}`);
+      expect(body).toContain(`Current default VP: ${row.defaultVp === null ? 'not priced yet' : row.defaultVp.toLocaleString()}`);
+      expect(body).toContain(row.feedbackPrompt);
+      expect(body).toContain('Share link: https://tomcome618.github.io/pokemon-champions-vp-planner/?team=abc');
+    }
   });
 });

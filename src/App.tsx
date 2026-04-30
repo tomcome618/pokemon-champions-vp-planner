@@ -286,6 +286,21 @@ export function App() {
               <small>
                 Default: {row.defaultVp === null ? 'not priced yet' : formatVp(row.defaultVp)} · {row.feedbackPrompt}
               </small>
+              <a
+                className="quality-feedback-link"
+                href={createFeedbackIssueUrl({
+                  baseUrl: feedbackLinks.githubIssues,
+                  report,
+                  shareLink,
+                  parsedPokemonCount: team.length,
+                  totalCost: cost.totalCost,
+                  category: row
+                })}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Report this category
+              </a>
             </article>
           ))}
         </div>
