@@ -4,6 +4,7 @@ import { feedbackLinks, sampleTeams } from './data/sampleTeams';
 import { DEFAULT_COST_ASSUMPTIONS, calculateTeamCost } from './lib/calculateVpCost';
 import { compareSampleTeams } from './lib/compareSampleTeams';
 import { getCostDataQualityRows, summarizeCostDataQuality } from './lib/costDataQuality';
+import { createBudgetMilestones } from './lib/createBudgetMilestones';
 import { createFeedbackIssueUrl } from './lib/createFeedbackIssueUrl';
 import { estimateTimeline } from './lib/estimateTimeline';
 import { generateShareReport } from './lib/generateShareReport';
@@ -60,6 +61,7 @@ export function App() {
     [cost.pokemonCosts]
   );
   const priorities = useMemo(() => prioritizeUpgrades(cost.pokemonCosts, currentVp), [cost.pokemonCosts, currentVp]);
+  const budgetMilestones = useMemo(() => createBudgetMilestones(priorities, currentVp), [currentVp, priorities]);
   const timeline = useMemo(
     () => estimateTimeline({
       missingVp: cost.missingVp,
@@ -266,6 +268,21 @@ export function App() {
             <button className="secondary-button share-link-button" onClick={copyShareLink} type="button">
               <Link size={16} /> {copiedLink ? 'Copied share link' : 'Copy shareable link'}
             </button>
+          </div>
+          <div className="milestone-panel" aria-label="Budget milestones">
+            <h2>Budget milestones</h2>
+            <p>See how far your current VP gets through the priority order before committing to a full team.</p>
+            <div className="milestone-list">
+              {budgetMilestones.map((milestone) => (
+                <article className={milestone.affordable ? 'milestone affordable' : 'milestone'} key={milestone.name}>
+                  <span>#{milestone.rank}</span>
+                  <div>
+                    <strong>{milestone.name}</strong>
+                    <small>{formatVp(milestone.cumulativeCost)} cumulative · {milestone.label}</small>
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
         </div>
       </section>

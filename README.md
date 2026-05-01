@@ -12,6 +12,7 @@ Paste a Pokemon Champions / Showdown-style team and get a practical VP plan:
 - URL share links that restore the same team, VP settings, owned Pokemon, and assumptions
 - prefilled GitHub feedback issues for wrong or missing VP data
 - category-specific VP data feedback links from each cost transparency row
+- budget milestones showing how far current VP gets through the priority order
 - SEO-friendly explanation guide for first-time visitors
 
 This MVP intentionally focuses on the Pokemon Champions-specific pain point: "Can I afford this team, and who should I build first?"

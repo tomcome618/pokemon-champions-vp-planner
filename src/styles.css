@@ -37,6 +37,16 @@ button:hover { filter: brightness(1.1); }
 .share-actions { display: grid; gap: 10px; margin-top: 16px; }
 .share-actions button { margin-top: 0; }
 .share-link-button { display: inline-flex; justify-content: center; align-items: center; gap: 8px; width: 100%; }
+.milestone-panel { margin-top: 18px; padding: 16px; border: 1px solid #263855; border-radius: 18px; background: #081322; }
+.milestone-panel h2 { margin: 0 0 6px; font-size: 18px; color: #eff6ff; }
+.milestone-panel p { margin: 0 0 12px; color: #aebdd3; line-height: 1.5; font-size: 13px; }
+.milestone-list { display: grid; gap: 10px; }
+.milestone { display: grid; grid-template-columns: 44px 1fr; gap: 10px; align-items: center; padding: 10px; border: 1px solid #3b4f6d; border-radius: 14px; background: #0b1728; }
+.milestone.affordable { border-color: #10b98188; background: #052e2b; }
+.milestone span { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 11px; background: #1e293b; color: #bfdbfe; font-weight: 900; }
+.milestone.affordable span { background: #047857; color: #d1fae5; }
+.milestone strong { display: block; color: #eff6ff; }
+.milestone small { color: #93c5fd; line-height: 1.45; }
 .owned-box { margin-top: 12px; padding: 13px 14px; border: 1px solid #263855; border-radius: 16px; background: #081322; }
 .owned-box label { font-size: 13px; }
 .owned-box small { display: block; margin-top: 8px; color: #93c5fd; line-height: 1.45; }
